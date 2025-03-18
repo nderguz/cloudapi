@@ -22,7 +22,7 @@ services:
       - SPRING_JPA_GENERATE-DDL=true
       - SPRING_JPA_OPEN_IN_VIEW=false
       - SPRING_APPLICATION_NAME=cloudapi
-      - SPRINGDOC_SWAGGER-UI_URL=/spec.yaml
+      - SPRINGDOC_SWAGGER-UI_URL=/openapi.yaml
       - SPRINGDOC_API-DOCS_ENABLED=false
     ports:
       - "8085:8085"

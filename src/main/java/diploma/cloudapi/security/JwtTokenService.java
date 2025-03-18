@@ -53,6 +53,23 @@ public class JwtTokenService {
         return true;
     }
 
+    public String getLoginFromToken(String jwtToken){
+        return Jwts.parser()
+                .setSigningKey(sighKey)
+                .build().parseClaimsJws(jwtToken)
+                .getPayload()
+                .getSubject();
+    }
+
+    public String getRoleFromToken(String jwtToken){
+        return Jwts.parser()
+                .setSigningKey(sighKey)
+                .build()
+                .parseClaimsJws(jwtToken)
+                .getPayload()
+                .get("role", String.class);
+    }
+
 //    public String getRoleFromToken(String jwtToken){
 //        return Jwts.parser()
 //    }

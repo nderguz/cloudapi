@@ -13,9 +13,7 @@ spring:
     open-in-view: false
 springdoc:
   swagger-ui:
-    url: /spec.yaml
-  api-docs:
-    enabled: false
+    url: /openapi.yaml
 server:
   port: 8085
 jwt:
