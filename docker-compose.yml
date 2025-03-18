@@ -1,0 +1,30 @@
+version: '3'
+
+services:
+  postgres:
+    image: postgres:latest
+    container_name: postgres-container
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin
+    ports:
+      - "5432:5432"
+
+  cloudapi-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/postgres
+      - SPRING_DATASOURCE_USERNAME=admin
+      - SPRING_DATASOURCE_PASSWORD=admin
+      - SPRING_JPA_GENERATE-DDL=true
+      - SPRING_JPA_OPEN_IN_VIEW=false
+      - SPRING_APPLICATION_NAME=cloudapi
+      - SPRINGDOC_SWAGGER-UI_URL=/spec.yaml
+      - SPRINGDOC_API-DOCS_ENABLED=false
+    ports:
+      - "8085:8085"
+    depends_on:
+      - postgres
