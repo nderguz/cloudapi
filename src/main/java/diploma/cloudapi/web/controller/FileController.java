@@ -1,5 +1,6 @@
 package diploma.cloudapi.web.controller;
 
+import diploma.cloudapi.security.AppUserDetails;
 import diploma.cloudapi.service.FileSerivce;
 import diploma.cloudapi.web.dto.FileListResponse;
 import diploma.cloudapi.web.dto.GetFileResponse;
@@ -7,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
@@ -24,11 +27,12 @@ public class FileController {
 
     @PostMapping(value = "/file", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Void> uploadFile(
+            @RequestHeader("auth-token") String authToken,
             @RequestParam(value = "filename") String filename,
             @RequestParam(value = "hash") String hash,
             @RequestParam(value = "file") MultipartFile file
     ){
-        fileSerivce.saveFile(filename,hash,file);
+        fileSerivce.uploadFile(filename,hash,file);
         return ResponseEntity.ok().build();
     }
 
@@ -50,10 +54,10 @@ public class FileController {
     }
 
     @GetMapping("/list")
-//    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
-    public ResponseEntity<?> getAllFiles(@RequestParam(name = "limit", defaultValue = "5") Integer limit){
-        return ResponseEntity.ok(List.of(new FileListResponse("Первый файл", 15),
-                new FileListResponse("Второй файл", 30),
-                new FileListResponse("Третий файл", 55)));
+    public ResponseEntity<List<FileListResponse>> getAllFiles(
+            @RequestParam(name = "limit", defaultValue = "5") Integer limit,
+            @AuthenticationPrincipal UserDetails userDetails
+    ){
+        return ResponseEntity.ok().body(fileSerivce.getAllUserFiles(userDetails, limit));
     }
 }

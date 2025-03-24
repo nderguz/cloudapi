@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
+import java.time.Instant;
 import java.util.Date;
 
 @Service
@@ -70,7 +71,11 @@ public class JwtTokenService {
                 .get("role", String.class);
     }
 
-//    public String getRoleFromToken(String jwtToken){
-//        return Jwts.parser()
-//    }
+    public Instant getExpiration(String jwtToken){
+        return Jwts.parser()
+                .setSigningKey(sighKey)
+                .build().parseClaimsJws(jwtToken)
+                .getPayload().getExpiration().toInstant();
+    }
+
 }

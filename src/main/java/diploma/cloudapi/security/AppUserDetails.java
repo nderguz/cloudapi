@@ -1,6 +1,7 @@
 package diploma.cloudapi.security;
 
 import diploma.cloudapi.entity.UserEntity;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
