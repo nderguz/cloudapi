@@ -1,7 +1,6 @@
-package diploma.cloudapi.web.dto;
+package diploma.cloudapi.web.dto.authorization;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

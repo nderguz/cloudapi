@@ -5,7 +5,7 @@ import diploma.cloudapi.entity.UserEntity;
 import diploma.cloudapi.repository.FileRepository;
 import diploma.cloudapi.repository.UserRepository;
 import diploma.cloudapi.security.JwtTokenService;
-import diploma.cloudapi.web.dto.FileListResponse;
+import diploma.cloudapi.web.dto.file.FileListResponse;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -26,7 +26,7 @@ import java.util.Objects;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class FileSerivce {
+public class FileService {
 
     private final FileRepository fileRepository;
     private final UserRepository userRepository;

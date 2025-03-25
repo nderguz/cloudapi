@@ -1,8 +1,8 @@
 package diploma.cloudapi.web.controller;
 
-import diploma.cloudapi.service.FileSerivce;
-import diploma.cloudapi.web.dto.ChangeFilenameRequest;
-import diploma.cloudapi.web.dto.FileListResponse;
+import diploma.cloudapi.service.FileService;
+import diploma.cloudapi.web.dto.file.ChangeFilenameRequest;
+import diploma.cloudapi.web.dto.file.FileListResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class FileController {
 
-    private final FileSerivce fileSerivce;
+    private final FileService fileService;
 
     @PostMapping(value = "/file", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Void> uploadFile(
@@ -26,7 +26,7 @@ public class FileController {
             @RequestParam(value = "filename") String filename,
             @RequestBody MultipartFile file
     ){
-        fileSerivce.uploadFile(authToken.substring(7), filename, file);
+        fileService.uploadFile(authToken.substring(7), filename, file);
         return ResponseEntity.ok().build();
     }
 
@@ -35,14 +35,14 @@ public class FileController {
             @RequestParam(value = "filename") String filename,
             @RequestHeader("auth-token") String authToken
     ){
-        fileSerivce.deleteFile(filename, authToken.substring(7));
+        fileService.deleteFile(filename, authToken.substring(7));
         return ResponseEntity.ok().build();
     }
 
     @GetMapping(value = "/file", produces = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<MultiValueMap<String, Object>> downloadFile(@RequestParam(value = "filename") String filename){
         return ResponseEntity.ok().contentType(MediaType.MULTIPART_FORM_DATA)
-                .body(fileSerivce.downloadFile(filename));
+                .body(fileService.downloadFile(filename));
     }
 
     @PutMapping("/file")
@@ -51,7 +51,7 @@ public class FileController {
             @RequestParam("filename") String oldFileName,
             @RequestBody ChangeFilenameRequest newFileName
             ){
-        fileSerivce.changeFileName(token.substring(7), oldFileName, newFileName.getFilename());
+        fileService.changeFileName(token.substring(7), oldFileName, newFileName.getFilename());
         return ResponseEntity.ok().build();
     }
 
@@ -61,6 +61,6 @@ public class FileController {
             @RequestHeader("auth-token") String token
     )
     {
-        return ResponseEntity.ok().body(fileSerivce.getAllUserFiles(token.substring(7), limit));
+        return ResponseEntity.ok().body(fileService.getAllUserFiles(token.substring(7), limit));
     }
 }

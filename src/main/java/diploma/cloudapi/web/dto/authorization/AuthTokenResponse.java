@@ -1,4 +1,4 @@
-package diploma.cloudapi.web.dto;
+package diploma.cloudapi.web.dto.authorization;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;

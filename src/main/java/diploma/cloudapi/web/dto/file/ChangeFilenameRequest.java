@@ -1,4 +1,4 @@
-package diploma.cloudapi.web.dto;
+package diploma.cloudapi.web.dto.file;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

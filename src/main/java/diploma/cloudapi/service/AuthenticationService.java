@@ -4,12 +4,10 @@ import diploma.cloudapi.entity.ActiveTokenEntity;
 import diploma.cloudapi.repository.ActiveTokenRepository;
 import diploma.cloudapi.repository.UserRepository;
 import diploma.cloudapi.security.JwtTokenService;
-import diploma.cloudapi.web.dto.AuthTokenResponse;
-import diploma.cloudapi.web.dto.AuthorizationRequest;
+import diploma.cloudapi.web.dto.authorization.AuthorizationRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 

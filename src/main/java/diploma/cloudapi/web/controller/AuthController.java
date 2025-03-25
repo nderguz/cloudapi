@@ -1,8 +1,8 @@
 package diploma.cloudapi.web.controller;
 
 import diploma.cloudapi.service.AuthenticationService;
-import diploma.cloudapi.web.dto.AuthTokenResponse;
-import diploma.cloudapi.web.dto.AuthorizationRequest;
+import diploma.cloudapi.web.dto.authorization.AuthTokenResponse;
+import diploma.cloudapi.web.dto.authorization.AuthorizationRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
