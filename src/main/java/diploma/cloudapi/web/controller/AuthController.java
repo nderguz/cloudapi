@@ -5,8 +5,6 @@ import diploma.cloudapi.web.dto.AuthTokenResponse;
 import diploma.cloudapi.web.dto.AuthorizationRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -23,16 +21,14 @@ public class AuthController {
     )
     {
         String token = authenticationService.authenticateUser(authRequest);
-        return ResponseEntity
-                .ok()
-                .body(new AuthTokenResponse(token));
+        return ResponseEntity.ok().body(new AuthTokenResponse(token));
     }
 
     @PostMapping("/logout")
     public ResponseEntity<Void> logout(
-            @AuthenticationPrincipal UserDetails user
+            @RequestHeader("auth-token") String token
     ){
-        authenticationService.logout(user);
-        return ResponseEntity.noContent().build();
+        authenticationService.logout(token.substring(7));
+        return ResponseEntity.ok().build();
     }
 }

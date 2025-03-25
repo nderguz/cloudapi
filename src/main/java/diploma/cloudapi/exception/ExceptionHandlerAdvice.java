@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class ExceptionHandlerAdvice {
 
+    //todo переделать ответ ошибки согласно спецификации
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> commonExceptionHandler(Exception ex){
         log.error("Caught some exception", ex);

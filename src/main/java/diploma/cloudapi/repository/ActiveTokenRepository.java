@@ -14,7 +14,7 @@ public interface ActiveTokenRepository extends JpaRepository<ActiveTokenEntity, 
     Optional<ActiveTokenEntity> findByToken(String token);
 
     @Transactional
-    void deleteActiveTokenEntityByUsername(String username);
+    void deleteActiveTokenEntityByToken(String token);
 
     @Modifying
     @Transactional

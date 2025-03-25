@@ -35,7 +35,7 @@ public class AuthenticationService {
         return token;
     }
 
-    public void logout(UserDetails user){
-        activeTokenRepository.deleteActiveTokenEntityByUsername(user.getUsername());
+    public void logout(String token){
+        activeTokenRepository.deleteActiveTokenEntityByToken(token);
     }
 }

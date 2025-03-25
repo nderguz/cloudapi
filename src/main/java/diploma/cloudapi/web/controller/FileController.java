@@ -1,21 +1,16 @@
 package diploma.cloudapi.web.controller;
 
-import diploma.cloudapi.security.AppUserDetails;
 import diploma.cloudapi.service.FileSerivce;
+import diploma.cloudapi.web.dto.ChangeFilenameRequest;
 import diploma.cloudapi.web.dto.FileListResponse;
-import diploma.cloudapi.web.dto.GetFileResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.print.attribute.standard.Media;
 import java.util.List;
 
 @RestController
@@ -29,16 +24,18 @@ public class FileController {
     public ResponseEntity<Void> uploadFile(
             @RequestHeader("auth-token") String authToken,
             @RequestParam(value = "filename") String filename,
-            @RequestParam(value = "hash") String hash,
-            @RequestParam(value = "file") MultipartFile file
+            @RequestBody MultipartFile file
     ){
-        fileSerivce.uploadFile(filename,hash,file);
+        fileSerivce.uploadFile(authToken.substring(7), filename, file);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/file")
-    public ResponseEntity<Void> deleteFile(@RequestParam(value = "filename") String filename){
-        fileSerivce.deleteFile(filename);
+    public ResponseEntity<Void> deleteFile(
+            @RequestParam(value = "filename") String filename,
+            @RequestHeader("auth-token") String authToken
+    ){
+        fileSerivce.deleteFile(filename, authToken.substring(7));
         return ResponseEntity.ok().build();
     }
 
@@ -49,15 +46,21 @@ public class FileController {
     }
 
     @PutMapping("/file")
-    public void editFile(){
-
+    public ResponseEntity<Void> editFile(
+            @RequestHeader("auth-token") String token,
+            @RequestParam("filename") String oldFileName,
+            @RequestBody ChangeFilenameRequest newFileName
+            ){
+        fileSerivce.changeFileName(token.substring(7), oldFileName, newFileName.getFilename());
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/list")
     public ResponseEntity<List<FileListResponse>> getAllFiles(
             @RequestParam(name = "limit", defaultValue = "5") Integer limit,
-            @AuthenticationPrincipal UserDetails userDetails
-    ){
-        return ResponseEntity.ok().body(fileSerivce.getAllUserFiles(userDetails, limit));
+            @RequestHeader("auth-token") String token
+    )
+    {
+        return ResponseEntity.ok().body(fileSerivce.getAllUserFiles(token.substring(7), limit));
     }
 }
