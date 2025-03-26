@@ -49,12 +49,12 @@ public class WebSecurityConfiguration {
                                                    AuthenticationManager authenticationManager,
                                                    JwtTokenFilter jwtTokenFilter)throws Exception{
         return http.authorizeHttpRequests(
-                auth -> auth.requestMatchers(HttpMethod.POST, "/cloud/login").permitAll()
+                auth -> auth.requestMatchers(HttpMethod.POST, "/login").permitAll()
                         .anyRequest().authenticated())
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(request -> {
                     var corsConfiguration = new CorsConfiguration();
-                    corsConfiguration.addAllowedOrigin("http://localhost:8080/");
+                    corsConfiguration.addAllowedOriginPattern("*");
                     corsConfiguration.addAllowedMethod("*");
                     corsConfiguration.addAllowedHeader("*");
                     corsConfiguration.setAllowCredentials(true);
@@ -74,7 +74,7 @@ public class WebSecurityConfiguration {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins("http://localhost:8080/")
+                        .allowedOrigins("http://localhost:8081")
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
                         .allowCredentials(true);

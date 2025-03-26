@@ -14,7 +14,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 @RestController
-@RequestMapping("/cloud")
 @RequiredArgsConstructor
 public class FileController {
 
