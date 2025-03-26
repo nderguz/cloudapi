@@ -36,7 +36,6 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException
     {
-        //todo все еще не тот пользак отображается
         String authorization = request.getHeader(HttpHeaders.AUTHORIZATION);
         String authToken = request.getHeader("auth-token");
         if(authorization == null || !authorization.startsWith("Bearer ")){

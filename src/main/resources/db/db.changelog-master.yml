@@ -1,0 +1,11 @@
+databaseChangeLog:
+  - include:
+      file: db/changeset-1-create-users-table.yml
+  - include:
+      file: db/changeset-2-create-files-table.yml
+  - include:
+      file: db/changeset-3-create-active-tokens-table.yml
+  - include:
+      file: db/changeset-4-create-user-roles-table.yml
+  - include:
+      file: db/init_test_data.sql

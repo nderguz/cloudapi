@@ -5,6 +5,7 @@ VALUES (2, '$2a$12$RzipMYO0aCP5CafQ1PdPP.m3XejJ92mPTPiDq6PNS0GkuDT7q71PS', 'test
 INSERT INTO users (id, password, login)
 VALUES (3, '$2a$12$gYshAjxnVMUFuZBUGi/72eUJmUdbdKkogJMfl349vTduUezkEXuTy', 'admin');
 
+
 INSERT INTO user_roles (user_id, role)
 VALUES (1, 'ROLE_USER');
 INSERT INTO user_roles (user_id, role)

@@ -12,15 +12,7 @@ spring:
     generate-ddl: true
     open-in-view: false
     hibernate:
-      ddl-auto: validate
-  liquibase:
-    change-log: classpath:db/db.changelog-master.yml
-    enabled: true
-springdoc:
-  swagger-ui:
-    url: /openapi.yaml
-server:
-  port: 8085
+      ddl-auto: create
 jwt:
   lifetime: 180000000
   sign-key: 20E6373E53AA93FFBAC681D68D12879819CF6641FB1C9393785C09182DF0CA36

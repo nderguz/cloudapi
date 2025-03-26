@@ -1,0 +1,20 @@
+databaseChangeLog:
+  - changeSet:
+      id: 3
+      author: nderguz
+      changes:
+        - createTable:
+            tableName: active_tokens
+            columns:
+              - column:
+                  name: token
+                  type: VARCHAR(1024)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: user_name
+                  type: VARCHAR(255)
+              - column:
+                  name: expires_at
+                  type: TIMESTAMP
