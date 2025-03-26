@@ -19,8 +19,6 @@ public class JwtTokenService {
     private final Long tokenLifetime;
     private final Key sighKey;
 
-    //todo переписать депрекейтнутые методы
-
     public JwtTokenService(
             @Value("${jwt.lifetime}") Long tokenLifetime,
             @Value("${jwt.sign-key}") String sighKey) {

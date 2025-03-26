@@ -55,7 +55,6 @@ public class FileController {
         return ResponseEntity.ok().build();
     }
 
-    //todo при получении файлов на фронте выскакивает второй запрос на авторизацию
     @GetMapping("/list")
     public ResponseEntity<List<FileListResponse>> getAllFiles(
             @RequestParam(name = "limit", defaultValue = "5") Integer limit,
