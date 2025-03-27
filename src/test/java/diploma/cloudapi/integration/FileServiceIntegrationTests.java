@@ -15,18 +15,19 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class FileServiceIntegrationTests extends AbstractTest {
 
-    private String token;
+    private String userName;
 
     @BeforeEach
-    public void setToken(){
+    public void setup(){
         var request = new AuthorizationRequest("test_user1", "test_user1");
-        token = authenticationService.authenticateUser(request);
+        String token = authenticationService.authenticateUser(request);
+        userName = jwtTokenService.getLoginFromToken(token);
     }
 
     @Test
     public void uploadFileSuccessTest(){
         MockMultipartFile file = new MockMultipartFile("file", "test.txt", "text/plain", "Test file data".getBytes());
-        assertDoesNotThrow(() -> fileService.uploadFile(token, "test.txt", file));
+        assertDoesNotThrow(() -> fileService.uploadFile(userName, "test.txt", file));
         assertTrue(fileRepository.findByFilename("test.txt").isPresent());
     }
 
@@ -34,7 +35,7 @@ public class FileServiceIntegrationTests extends AbstractTest {
     @SneakyThrows
     public void downloadFileTest(){
         MockMultipartFile file = new MockMultipartFile("file", "test.txt", "text/plain", "Test file data".getBytes());
-        fileService.uploadFile(token, "test.txt", file);
+        fileService.uploadFile(userName, "test.txt", file);
 
         MultiValueMap<String, Object> downloadedFile = fileService.downloadFile("test.txt");
         assertNotNull(downloadedFile);
@@ -44,9 +45,9 @@ public class FileServiceIntegrationTests extends AbstractTest {
     @Test
     public void deleteFileTest(){
         MockMultipartFile file = new MockMultipartFile("file", "test.txt", "text/plain", "Test file data".getBytes());
-        fileService.uploadFile(token, "test.txt", file);
+        fileService.uploadFile(userName, "test.txt", file);
 
-        assertDoesNotThrow(() -> fileService.deleteFile("test.txt", token));
+        assertDoesNotThrow(() -> fileService.deleteFile("test.txt", userName));
         assertFalse(fileRepository.findByFilename("test.txt").isPresent());
     }
 
@@ -54,19 +55,19 @@ public class FileServiceIntegrationTests extends AbstractTest {
     public void getAllUserFilesTest(){
         MockMultipartFile file1 = new MockMultipartFile("file", "file1.txt", "text/plain", "Data1".getBytes());
         MockMultipartFile file2 = new MockMultipartFile("file", "file2.txt", "text/plain", "Data2".getBytes());
-        fileService.uploadFile(token, "file1.txt", file1);
-        fileService.uploadFile(token, "file2.txt", file2);
+        fileService.uploadFile(userName, "file1.txt", file1);
+        fileService.uploadFile(userName, "file2.txt", file2);
 
-        List<FileListResponse> files = fileService.getAllUserFiles(token, 10);
+        List<FileListResponse> files = fileService.getAllUserFiles(userName, 10);
         assertEquals(2, files.size());
     }
 
     @Test
     public void changeFilenameTest(){
         MockMultipartFile file = new MockMultipartFile("file", "oldName.txt", "text/plain", "Data".getBytes());
-        fileService.uploadFile(token, "oldName.txt", file);
+        fileService.uploadFile(userName, "oldName.txt", file);
 
-        assertDoesNotThrow(() -> fileService.changeFileName(token, "oldName.txt", "newName.txt"));
+        assertDoesNotThrow(() -> fileService.changeFileName(userName, "oldName.txt", "newName.txt"));
         assertTrue(fileRepository.findByFilename("newName.txt").isPresent());
     }
 }

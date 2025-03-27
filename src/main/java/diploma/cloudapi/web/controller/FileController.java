@@ -1,5 +1,6 @@
 package diploma.cloudapi.web.controller;
 
+import diploma.cloudapi.security.JwtTokenService;
 import diploma.cloudapi.service.FileService;
 import diploma.cloudapi.web.dto.file.ChangeFilenameRequest;
 import diploma.cloudapi.web.dto.file.FileListResponse;
@@ -18,6 +19,7 @@ import java.util.List;
 public class FileController {
 
     private final FileService fileService;
+    private final JwtTokenService jwtTokenService;
 
     @PostMapping(value = "/file", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Void> uploadFile(
@@ -25,7 +27,8 @@ public class FileController {
             @RequestParam(value = "filename") String filename,
             @RequestBody MultipartFile file
     ){
-        fileService.uploadFile(authToken.substring(7), filename, file);
+        String userName = jwtTokenService.getLoginFromToken(authToken);
+        fileService.uploadFile(userName, filename, file);
         return ResponseEntity.ok().build();
     }
 
@@ -34,7 +37,8 @@ public class FileController {
             @RequestParam(value = "filename") String filename,
             @RequestHeader("auth-token") String authToken
     ){
-        fileService.deleteFile(filename, authToken.substring(7));
+        String userName = jwtTokenService.getLoginFromToken(authToken);
+        fileService.deleteFile(filename, userName);
         return ResponseEntity.ok().build();
     }
 
@@ -46,20 +50,22 @@ public class FileController {
 
     @PutMapping("/file")
     public ResponseEntity<Void> editFile(
-            @RequestHeader("auth-token") String token,
+            @RequestHeader("auth-token") String authToken,
             @RequestParam("filename") String oldFileName,
             @RequestBody ChangeFilenameRequest newFileName
             ){
-        fileService.changeFileName(token.substring(7), oldFileName, newFileName.getFilename());
+        String token = jwtTokenService.getLoginFromToken(authToken);
+        fileService.changeFileName(token, oldFileName, newFileName.getFilename());
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("/list")
     public ResponseEntity<List<FileListResponse>> getAllFiles(
             @RequestParam(name = "limit", defaultValue = "5") Integer limit,
-            @RequestHeader("auth-token") String token
+            @RequestHeader("auth-token") String authToken
     )
     {
-        return ResponseEntity.ok().body(fileService.getAllUserFiles(token.substring(7), limit));
+        String userName = jwtTokenService.getLoginFromToken(authToken);
+        return ResponseEntity.ok().body(fileService.getAllUserFiles(userName, limit));
     }
 }

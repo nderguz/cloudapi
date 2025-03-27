@@ -4,7 +4,6 @@ import diploma.cloudapi.entity.FileEntity;
 import diploma.cloudapi.entity.UserEntity;
 import diploma.cloudapi.repository.FileRepository;
 import diploma.cloudapi.repository.UserRepository;
-import diploma.cloudapi.security.JwtTokenService;
 import diploma.cloudapi.web.dto.file.FileListResponse;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -30,17 +29,15 @@ public class FileService {
 
     private final FileRepository fileRepository;
     private final UserRepository userRepository;
-    private final JwtTokenService jwtTokenService;
 
     @SneakyThrows
     @Transactional
-    public void uploadFile(String token, String filename, MultipartFile file)  {
+    public void uploadFile(String userName, String filename, MultipartFile file)  {
         log.info("Request to upload file {}", filename);
         FileEntity fileEntity = new FileEntity();
         fileEntity.setFilename(filename);
         fileEntity.setFileData(file.getBytes());
 
-        String userName = jwtTokenService.getLoginFromToken(token);
         UserEntity user = userRepository.findByLogin(userName)
                 .orElseThrow(() -> new EntityNotFoundException("User %s was not found".formatted(userName)));
 
@@ -68,19 +65,18 @@ public class FileService {
     }
 
     @Transactional
-    public void deleteFile(String filename, String token){
+    public void deleteFile(String filename, String userName){
         log.info("Request to delete file {}", filename);
         FileEntity file = fileRepository.findByFilename(filename)
                         .orElseThrow(() -> new EntityNotFoundException("File not found"));
-        if (!Objects.equals(file.getUser().getLogin(), jwtTokenService.getLoginFromToken(token))){
+        if (!Objects.equals(file.getUser().getLogin(), userName)){
             throw new IllegalArgumentException("This user is not allowed to change this file");
         }
         fileRepository.deleteFileEntitiesByFilename(filename);
     }
 
     @Transactional(readOnly = true)
-    public List<FileListResponse> getAllUserFiles(String token, Integer limit){
-        String userName = jwtTokenService.getLoginFromToken(token);
+    public List<FileListResponse> getAllUserFiles(String userName, Integer limit){
         log.info("Request for user {} files", userName.toUpperCase(Locale.ROOT));
 
         UserEntity currentUser = userRepository.findByLogin(userName)
@@ -96,12 +92,12 @@ public class FileService {
     }
 
     @Transactional
-    public void changeFileName(String token, String oldFileName, String newFileName){
+    public void changeFileName(String userName, String oldFileName, String newFileName){
         log.info("Request to change filename from {} to {}", oldFileName, newFileName);
         FileEntity file = fileRepository.findByFilename(oldFileName)
                 .orElseThrow(() -> new EntityNotFoundException("File not found"));
 
-        if (!Objects.equals(file.getUser().getLogin(), jwtTokenService.getLoginFromToken(token))){
+        if (!Objects.equals(file.getUser().getLogin(), userName)){
             throw new IllegalArgumentException("This user is not allowed to change this file");
         }
 

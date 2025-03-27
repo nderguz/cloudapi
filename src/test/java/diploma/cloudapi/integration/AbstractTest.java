@@ -2,6 +2,7 @@ package diploma.cloudapi.integration;
 
 import diploma.cloudapi.repository.ActiveTokenRepository;
 import diploma.cloudapi.repository.FileRepository;
+import diploma.cloudapi.security.JwtTokenService;
 import diploma.cloudapi.service.AuthenticationService;
 import diploma.cloudapi.service.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,9 @@ public class AbstractTest extends TestcontainersConfig{
 
     @Autowired
     protected FileRepository fileRepository;
+
+    @Autowired
+    protected JwtTokenService jwtTokenService;
 
     @Bean
     protected PasswordEncoder passwordEncoder(){

@@ -69,10 +69,9 @@ public class FileServiceTest {
         MultipartFile file = mock(MultipartFile.class);
         when(file.getBytes()).thenReturn(new byte[]{1, 2, 3});
         when(file.getContentType()).thenReturn("text/plain");
-        when(jwtTokenService.getLoginFromToken(anyString())).thenReturn("testUser");
         when(userRepository.findByLogin("testUser")).thenReturn(Optional.of(testUser));
 
-        fileService.uploadFile("token", "test.txt", file);
+        fileService.uploadFile("testUser", "test.txt", file);
 
         verify(fileRepository, times(1)).save(any(FileEntity.class));
     }
@@ -80,9 +79,8 @@ public class FileServiceTest {
     @Test
     public void deleteFileTest(){
         when(fileRepository.findByFilename("test.txt")).thenReturn(Optional.of(testFile));
-        when(jwtTokenService.getLoginFromToken(anyString())).thenReturn("testUserLogin");
 
-        fileService.deleteFile("test.txt", "token");
+        fileService.deleteFile("test.txt", "testUserLogin");
 
         verify(fileRepository, times(1)).deleteFileEntitiesByFilename("test.txt");
     }
@@ -90,9 +88,8 @@ public class FileServiceTest {
     @Test
     public void deleteFileUnauthorizedTest(){
         when(fileRepository.findByFilename("test.txt")).thenReturn(Optional.of(testFile));
-        when(jwtTokenService.getLoginFromToken(anyString())).thenReturn("otherUser");
 
-        assertThrows(IllegalArgumentException.class, () -> fileService.deleteFile("test.txt", "token"));
+        assertThrows(IllegalArgumentException.class, () -> fileService.deleteFile("test.txt", "otherUser"));
 
         verify(fileRepository, never()).deleteFileEntitiesByFilename(anyString());
     }
@@ -100,9 +97,8 @@ public class FileServiceTest {
     @Test
     public void changeFileNameTest(){
         when(fileRepository.findByFilename("test.txt")).thenReturn(Optional.of(testFile));
-        when(jwtTokenService.getLoginFromToken(anyString())).thenReturn("testUserLogin");
 
-        fileService.changeFileName("token", "test.txt", "new.txt");
+        fileService.changeFileName("testUserLogin", "test.txt", "new.txt");
 
         verify(fileRepository, times(1)).save(any(FileEntity.class));
         assertEquals("new.txt", testFile.getFilename());
@@ -111,9 +107,8 @@ public class FileServiceTest {
     @Test
     public void changeFileNameUnauthorizedTest(){
         when(fileRepository.findByFilename("test.txt")).thenReturn(Optional.of(testFile));
-        when(jwtTokenService.getLoginFromToken(anyString())).thenReturn("otherUser");
 
-        assertThrows(IllegalArgumentException.class, () -> fileService.changeFileName("token", "test.txt", "new.txt"));
+        assertThrows(IllegalArgumentException.class, () -> fileService.changeFileName("otherUser", "test.txt", "new.txt"));
 
         verify(fileRepository, never()).save(any(FileEntity.class));
     }
