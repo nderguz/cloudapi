@@ -42,6 +42,7 @@ public class FileController {
         return ResponseEntity.ok().build();
     }
 
+    //todo переделать
     @GetMapping(value = "/file", produces = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<MultiValueMap<String, Object>> downloadFile(@RequestParam(value = "filename") String filename){
         return ResponseEntity.ok().contentType(MediaType.MULTIPART_FORM_DATA)
@@ -59,6 +60,7 @@ public class FileController {
         return ResponseEntity.ok().build();
     }
 
+    //todo переделать
     @GetMapping("/list")
     public ResponseEntity<List<FileListResponse>> getAllFiles(
             @RequestParam(name = "limit", defaultValue = "5") Integer limit,
@@ -66,6 +68,12 @@ public class FileController {
     )
     {
         String userName = jwtTokenService.getLoginFromToken(authToken);
-        return ResponseEntity.ok().body(fileService.getAllUserFiles(userName, limit));
+        List <FileListResponse> response = fileService.getAllUserFiles(userName, limit).stream()
+                .map(it -> FileListResponse.builder()
+                        .filename(it.getFilename())
+                        .build())
+                .limit(limit)
+                .toList();
+        return ResponseEntity.ok().body(response);
     }
 }

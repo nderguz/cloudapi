@@ -4,7 +4,6 @@ import diploma.cloudapi.entity.FileEntity;
 import diploma.cloudapi.entity.UserEntity;
 import diploma.cloudapi.repository.FileRepository;
 import diploma.cloudapi.repository.UserRepository;
-import diploma.cloudapi.web.dto.file.FileListResponse;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -76,19 +75,13 @@ public class FileService {
     }
 
     @Transactional(readOnly = true)
-    public List<FileListResponse> getAllUserFiles(String userName, Integer limit){
+    public List<FileEntity> getAllUserFiles(String userName, Integer limit){
         log.info("Request for user {} files", userName.toUpperCase(Locale.ROOT));
 
         UserEntity currentUser = userRepository.findByLogin(userName)
                 .orElseThrow(() -> new EntityNotFoundException("User %s was not found".formatted(userName)));
-        List<FileEntity> userFiles = fileRepository.getFileEntitiesByUser(currentUser, PageRequest.of(0, limit))
+        return fileRepository.getFileEntitiesByUser(currentUser, PageRequest.of(0, limit))
                 .orElseThrow(() -> new EntityNotFoundException("User files was not found"));
-        return userFiles.stream()
-                .map(it -> FileListResponse.builder()
-                        .filename(it.getFilename())
-                        .build())
-                .limit(limit)
-                .toList();
     }
 
     @Transactional

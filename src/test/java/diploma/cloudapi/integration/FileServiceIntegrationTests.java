@@ -1,5 +1,6 @@
 package diploma.cloudapi.integration;
 
+import diploma.cloudapi.entity.FileEntity;
 import diploma.cloudapi.web.dto.authorization.AuthorizationRequest;
 import diploma.cloudapi.web.dto.file.FileListResponse;
 import lombok.SneakyThrows;
@@ -58,7 +59,7 @@ public class FileServiceIntegrationTests extends AbstractTest {
         fileService.uploadFile(userName, "file1.txt", file1);
         fileService.uploadFile(userName, "file2.txt", file2);
 
-        List<FileListResponse> files = fileService.getAllUserFiles(userName, 10);
+        var files = fileService.getAllUserFiles(userName, 10);
         assertEquals(2, files.size());
     }
 
