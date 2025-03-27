@@ -2,6 +2,7 @@ package diploma.cloudapi.serviceTests;
 
 import diploma.cloudapi.entity.FileEntity;
 import diploma.cloudapi.entity.UserEntity;
+import diploma.cloudapi.exception.ApiException;
 import diploma.cloudapi.repository.FileRepository;
 import diploma.cloudapi.repository.UserRepository;
 import diploma.cloudapi.security.JwtTokenService;
@@ -108,7 +109,7 @@ public class FileServiceTest {
     public void changeFileNameUnauthorizedTest(){
         when(fileRepository.findByFilename("test.txt")).thenReturn(Optional.of(testFile));
 
-        assertThrows(IllegalArgumentException.class, () -> fileService.changeFileName("otherUser", "test.txt", "new.txt"));
+        assertThrows(ApiException.class, () -> fileService.changeFileName("otherUser", "test.txt", "new.txt"));
 
         verify(fileRepository, never()).save(any(FileEntity.class));
     }

@@ -2,9 +2,9 @@ package diploma.cloudapi.service;
 
 import diploma.cloudapi.entity.FileEntity;
 import diploma.cloudapi.entity.UserEntity;
+import diploma.cloudapi.exception.ApiException;
 import diploma.cloudapi.repository.FileRepository;
 import diploma.cloudapi.repository.UserRepository;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -38,7 +38,7 @@ public class FileService {
         fileEntity.setFileData(file.getBytes());
 
         UserEntity user = userRepository.findByLogin(userName)
-                .orElseThrow(() -> new EntityNotFoundException("User %s was not found".formatted(userName)));
+                .orElseThrow(() -> new ApiException("User %s was not found".formatted(userName)));
 
         fileEntity.setUser(user);
         fileEntity.setContentType(file.getContentType());
@@ -52,7 +52,7 @@ public class FileService {
     public MultiValueMap<String, Object> downloadFile(String filename){
         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
         FileEntity file = fileRepository.findByFilename(filename)
-                .orElseThrow(() -> new EntityNotFoundException("File %s was not found".formatted(filename)));
+                .orElseThrow(() -> new ApiException("File %s was not found".formatted(filename)));
         body.add("file", new ByteArrayResource(file.getFileData()){
             @Override
             public String getFilename(){
@@ -67,7 +67,7 @@ public class FileService {
     public void deleteFile(String filename, String userName){
         log.info("Request to delete file {}", filename);
         FileEntity file = fileRepository.findByFilename(filename)
-                        .orElseThrow(() -> new EntityNotFoundException("File not found"));
+                        .orElseThrow(() -> new ApiException("File not found"));
         if (!Objects.equals(file.getUser().getLogin(), userName)){
             throw new IllegalArgumentException("This user is not allowed to change this file");
         }
@@ -79,19 +79,19 @@ public class FileService {
         log.info("Request for user {} files", userName.toUpperCase(Locale.ROOT));
 
         UserEntity currentUser = userRepository.findByLogin(userName)
-                .orElseThrow(() -> new EntityNotFoundException("User %s was not found".formatted(userName)));
+                .orElseThrow(() -> new ApiException("User %s was not found".formatted(userName)));
         return fileRepository.getFileEntitiesByUser(currentUser, PageRequest.of(0, limit))
-                .orElseThrow(() -> new EntityNotFoundException("User files was not found"));
+                .orElseThrow(() -> new ApiException("User files was not found"));
     }
 
     @Transactional
     public void changeFileName(String userName, String oldFileName, String newFileName){
         log.info("Request to change filename from {} to {}", oldFileName, newFileName);
         FileEntity file = fileRepository.findByFilename(oldFileName)
-                .orElseThrow(() -> new EntityNotFoundException("File not found"));
+                .orElseThrow(() -> new ApiException("File not found"));
 
         if (!Objects.equals(file.getUser().getLogin(), userName)){
-            throw new IllegalArgumentException("This user is not allowed to change this file");
+            throw new ApiException("This user is not allowed to change this file");
         }
 
         file.setFilename(newFileName);
